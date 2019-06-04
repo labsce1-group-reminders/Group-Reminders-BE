@@ -15,7 +15,8 @@
   - [Resources](#Resources)
     - [Auth](#Auth)
     - [Users](#Users)
-    - [Team Members](#Team-Members)
+    - [Classes](#Classes)
+    - [Classes Members](#Class-Member)
     - [Training Series](#Training-Series)
     - [Messages](#Messages)
     - [Stripe](#Stripe)
@@ -51,10 +52,17 @@ Valid JWTs are provided by the Auth0 integration with our [React application](ht
 
 #### Auth
 
-| route       | methods | description                                              |                                                        Docs                                                         |
-| :---------- | :-----: | :------------------------------------------------------- | :-----------------------------------------------------------------------------------------------------------------: |
-| `api/auth/` |  POST   | Takes a valid JWT provided by Auth0 and logs the user in | [JS Docs](https://github.com/labs12-training-bot-2/labs12-training-bot-2-BE/blob/master/controllers/auth.js#L9-L65) |
+| route              | methods | description                                                 |                                                        Docs                                                         |
+| :----------------- | :-----: | :---------------------------------------------------------- | :-----------------------------------------------------------------------------------------------------------------: |
+| `api/auth/`        |  POST   | Takes a valid JWT provided by Auth0 and logs the User  in   | [JS Docs](https://github.com/labs12-training-bot-2/labs12-training-bot-2-BE/blob/master/controllers/auth.js#L9-L65) |
 
+---
+#### Organization
+
+| route                                  |     methods      | description                                    |                      Docs                                                                                                   |
+| :------------------------------------- | :--------------: | :--------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------: |
+| `api/organization/`                    |    GET, POST     | Get all, or Create a new Organization          | [JS Doc](https://github.com/labs12-training-bot-2/labs12-training-bot-2-BE/blob/master/controllers/teamMember.js#L58-L143)  |
+| `api/organization/:id`                 | GET, PUT, DELETE | Read, Update, and Delete specific Organization | [JS Doc](https://github.com/labs12-training-bot-2/labs12-training-bot-2-BE/blob/master/controllers/teamMember.js#L57-L141)  |
 ---
 
 #### Users
@@ -65,24 +73,34 @@ Valid JWTs are provided by the Auth0 integration with our [React application](ht
 
 ---
 
-#### Team Members
+#### Classes
 
-| route                                  |     methods      | description                                                                                                                      |                                                            Docs                                                             |
-| :------------------------------------- | :--------------: | :------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------: |
-| `api/team-members/`                    |    GET, POST     | Get all Team Members associated with an authenticated User and/or Create a new Team Member associated with an authenticated User | [JS Doc](https://github.com/labs12-training-bot-2/labs12-training-bot-2-BE/blob/master/controllers/teamMember.js#L58-L143)  |
-| `api/team-members/:id`                 | GET, PUT, DELETE | Read, Update, and Delete specific Team Members                                                                                   | [JS Doc](https://github.com/labs12-training-bot-2/labs12-training-bot-2-BE/blob/master/controllers/teamMember.js#L57-L141)  |
-| `api/team-members/:id/unassign/:ts_id` |      DELETE      | Unassign a specified Team Member from a Training Series                                                                          | [JS Doc](https://github.com/labs12-training-bot-2/labs12-training-bot-2-BE/blob/master/controllers/teamMember.js#L144-L213) |
+| route                             |     methods      | description                                                                                                                             |                                                            Docs                                                             |
+| :-------------------------------- | :--------------: | :-------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------: |
+| `api/classes/`                    |    GET, POST     | Get all classes associated with an authenticated Country Manager and/or Create a class associated with an authenticated Country Manager | [JS Doc](https://github.com/labs12-training-bot-2/labs12-training-bot-2-BE/blob/master/controllers/teamMember.js#L58-L143)  |
+| `api/classes/:id`                 | GET, PUT, DELETE | Read, Update, and Delete specific class                                                                                                 | [JS Doc](https://github.com/labs12-training-bot-2/labs12-training-bot-2-BE/blob/master/controllers/teamMember.js#L57-L141)  |
+| `api/classes/:id/unassign/:cm_id` |      DELETE      | Unassign a specified Class member from a Training Series                                                                                | [JS Doc](https://github.com/labs12-training-bot-2/labs12-training-bot-2-BE/blob/master/controllers/teamMember.js#L144-L213) |
+
+---
+
+#### Class-Member
+
+| route                                  |     methods      | description                                                                                                                                  |                                                            Docs                                                             |
+| :------------------------------------- | :--------------: | :------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------: |
+| `api/class_member/`                    |    GET, POST     | Get all Class_member associated with an authenticated Country Manager and/or Create a class associated with an authenticated Country Manager | [JS Doc](https://github.com/labs12-training-bot-2/labs12-training-bot-2-BE/blob/master/controllers/teamMember.js#L58-L143)  |
+| `api/class_member/:id`                 | GET, PUT, DELETE | Read, Update, and Delete specific Class_member                                                                                               | [JS Doc](https://github.com/labs12-training-bot-2/labs12-training-bot-2-BE/blob/master/controllers/teamMember.js#L57-L141)  |
 
 ---
 
 #### Training Series
 
-| route                               |      methods      | description                                                                                                                                 |                                                              Docs                                                               |
-| :---------------------------------- | :---------------: | :------------------------------------------------------------------------------------------------------------------------------------------ | :-----------------------------------------------------------------------------------------------------------------------------: |
-| `api/training-series/`              |     GET, POST     | Get all the training series associated with an authenticated User and/or Create a new training series associated with an authenticated User |  [JS Doc](https://github.com/labs12-training-bot-2/labs12-training-bot-2-BE/blob/master/controllers/trainingSeries.js#L15-L53)  |
-| `api/training-series/:id`           | GET, POST, DELETE | Read, Update, and Delete specific training series                                                                                           | [JS Doc](https://github.com/labs12-training-bot-2/labs12-training-bot-2-BE/blob/master/controllers/trainingSeries.js#L55-L140)  |
-| `api/training-series/:id/messages`  |        GET        | Get all the messages for a specific training series                                                                                         | [JS Doc](https://github.com/labs12-training-bot-2/labs12-training-bot-2-BE/blob/master/controllers/trainingSeries.js#L142-L170) |
-| `api/training-series/:id/assignees` |        GET        | Get the team members for the specific training series                                                                                       | [JS Doc](https://github.com/labs12-training-bot-2/labs12-training-bot-2-BE/blob/master/controllers/trainingSeries.js#L172-L215) |
+| route                                 |      methods      | description                                                                                                                                                             |                                                              Docs                                                               |
+| :----------------------------------   | :---------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-----------------------------------------------------------------------------------------------------------------------------: |
+| `api/training-series/`                |     GET, POST     | Get all the training series associated with a authenticated Users' Organization and/or Create a new training series associated with a authenticated Users' Organization |  [JS Doc](https://github.com/labs12-training-bot-2/labs12-training-bot-2-BE/blob/master/controllers/trainingSeries.js#L15-L53)  |
+| `api/training-series/?search=string`  |     GET           | Search all the training series associated with an authenticated Users' Organization and search parameter                                                                |  [JS Doc](https://github.com/labs12-training-bot-2/labs12-training-bot-2-BE/blob/master/controllers/trainingSeries.js#L15-L53)  |
+| `api/training-series/:id`             | GET, POST, DELETE | Read, Update, and Delete specific training series                                                                                                                       | [JS Doc](https://github.com/labs12-training-bot-2/labs12-training-bot-2-BE/blob/master/controllers/trainingSeries.js#L55-L140)  |
+| `api/training-series/:id/messages`    |        GET        | Get all the messages for a specific training series                                                                                                                     | [JS Doc](https://github.com/labs12-training-bot-2/labs12-training-bot-2-BE/blob/master/controllers/trainingSeries.js#L142-L170) |
+| `api/training-series/:id/assignees`   |        GET        | Get the team members for the specific training series                                                                                                                   | [JS Doc](https://github.com/labs12-training-bot-2/labs12-training-bot-2-BE/blob/master/controllers/trainingSeries.js#L172-L215) |
 
 ---
 
@@ -111,12 +129,12 @@ Valid JWTs are provided by the Auth0 integration with our [React application](ht
 
 #### Slack
 
-| route | methods | description | Docs |
-|:--- | :---: | :--- | :---:|
-| `api/slack/oauth` | POST | Creates authenticated Slack Token in the database after oauth validation | [JS Doc](https://github.com/labs12-training-bot-2/labs12-training-bot-2-BE/blob/master/controllers/slack.js#L24-L60) |
-| `api/slack/` | GET | Get all Slack users from the authenticated Slack workspace | [JS Doc](https://github.com/labs12-training-bot-2/labs12-training-bot-2-BE/blob/master/controllers/slack.js#L62-L95)  |
-| `api/slack/:id/history` | GET | Get all messages in specific DM chat history with specified Team Member | [JS Doc](https://github.com/labs12-training-bot-2/labs12-training-bot-2-BE/blob/master/controllers/slack.js#L97-L138) |
-| `api/slack/sendMessageNow` | POST | Bypass Notification timer and immediately send specified Team Member a Slack Message, for testing purposes only | [JS Doc](https://github.com/labs12-training-bot-2/labs12-training-bot-2-BE/blob/master/controllers/slack.js#L140-L208) |
+| route                      | methods | description                                                                                                     |           Docs |
+|:-------------------------- |:---:    | :-------------------------------------------------------------------------------------------------------------- | :-------------:|
+| `api/slack/oauth`          | POST    | Creates authenticated Slack Token in the database after oauth validation                                        | [JS Doc](https://github.com/labs12-training-bot-2/labs12-training-bot-2-BE/blob/master/controllers/slack.js#L24-L60) |
+| `api/slack/`               | GET     | Get all Slack users from the authenticated Slack workspace                                                      | [JS Doc](https://github.com/labs12-training-bot-2/labs12-training-bot-2-BE/blob/master/controllers/slack.js#L62-L95)  |
+| `api/slack/:id/history`    | GET     | Get all messages in specific DM chat history with specified Team Member                                         | [JS Doc](https://github.com/labs12-training-bot-2/labs12-training-bot-2-BE/blob/master/controllers/slack.js#L97-L138) |
+| `api/slack/sendMessageNow` | POST    | Bypass Notification timer and immediately send specified Team Member a Slack Message, for testing purposes only | [JS Doc](https://github.com/labs12-training-bot-2/labs12-training-bot-2-BE/blob/master/controllers/slack.js#L140-L208) |
 
 ---
 
