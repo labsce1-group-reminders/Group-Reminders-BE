@@ -2,13 +2,12 @@ exports.up = function(knex, Promise) {
     return knex.schema
         .createTable("users", tbl => {
             tbl.increments();
-            tbl.text("firstName").notNullable();
-            tbl.text("lastName").notNullable();
+            tbl.text("name").notNullable();
             tbl.text("email").notNullable();
             tbl.text("stripe");
             tbl.text("country").defaultTo("");
-            tbl.boolean("is_admin").notNullable();
-            tbl.boolean("is_manager").notNullable();
+            tbl.boolean("is_admin").nullable().defaultTo(false);
+            tbl.boolean("is_manager").nullable().defaultTo(false);
             tbl
                 .integer("notifications_sent")
                 .notNullable()
