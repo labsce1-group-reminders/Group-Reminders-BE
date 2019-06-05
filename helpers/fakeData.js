@@ -21,8 +21,7 @@ function createFakeUsers() {
   const newAdminUsers = [];
   const newManagerUsers = [];
   const fakeUser = (type) => ({
-        firstName: faker.name.firstName(),
-        lastName: faker.name.lastName(),
+        name: faker.name.findName(),
         email: faker.internet.email(),
         notifications_sent: 0,
         country: type ? "" : faker.address.country(),
