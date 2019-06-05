@@ -21,13 +21,13 @@ function createFakeUsers() {
   const newAdminUsers = [];
   const newManagerUsers = [];
   const fakeUser = (type) => ({
-    firstName: faker.name.findName(),
-    lastName: faker.name.findName(),
-    email: faker.internet.email(),
-    notifications_sent: 0,
-    country: type ? "" : faker.address.country(),
-    is_admin: type,
-    is_manager: type,
+        firstName: faker.name.firstName(),
+        lastName: faker.name.lastName(),
+        email: faker.internet.email(),
+        notifications_sent: 0,
+        country: type ? "" : faker.address.country(),
+        is_admin: type,
+        is_manager: type,
   });
   for (let i = 0; i < userSeeds; i++) {
     newAdminUsers.push(fakeUser(true));
