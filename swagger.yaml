@@ -1,7 +1,9 @@
 openapi: 3.0.0
 info:
   title: Group Reminder
-  description: Group Reminder app for non profit organization [CommonMark](http://commonmark.org/help/) or HTML.
+  description: Group Reminder app for non profit organization [MentorsInternational](https://mentorsinternational.org/) or HTML.
+    Since most of our url is protected, user will need a JWT token in order to get access. You can get that token from
+    localstorage in the Front-End application, and just copy paste that in to the input provided after clicking the authorize button bellow
   version: 0.3.0
 servers:
   - url: http://localhost:5000/api
@@ -50,7 +52,7 @@ components:
         - country
         - user_id
       properties:
-        name:
+        title:
           type: string
         country:
           type: string
@@ -90,9 +92,6 @@ components:
         - body
         - link
         - training_series_id
-        - for_manager
-        - for_class
-        - for_class_member
       properties:
         subject:
           type: string
@@ -117,11 +116,6 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
-    openId:   # <--- Arbitrary name for the security scheme. Used to refer to it from elsewhere.
-      type: openIdConnect
-      openIdConnectUrl: https://example.com/.well-known/openid-configuration
-
-
 
 paths:
   /auth:
@@ -582,6 +576,137 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Training Series'
+  /training-series/{id}/messages:
+    get:
+      summary:  Get all the messages for a specific training series
+      description: Get all the messages for a specific training series
+      security:
+        - basicAuth: []
+      tags:
+        - Training Series
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of a Training Series
+      responses:
+        '200':    # status code
+          description: A JSON representation of array of Messages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Messages'
+  /messages:
+    get:
+      summary: Get all Messages associated with an authenticated User
+      description: Get all Messages associated with an authenticated User
+      security:
+        - basicAuth: []
+      tags:
+        - Messages
+      responses:
+        '200':    # status code
+          description: 200 status for sucessful get request of all messages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Messages'
+    post:
+      summary: Create a new Message associated with an authenticated User
+      description: Create a new Message associated with an authenticated User
+      security:
+        - basicAuth: []
+      tags:
+        - Messages
+      requestBody:
+        description: Creating messages fields
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Messages'
+      responses:
+        '200':    # status code
+          description: 200 status for sucessful create messages request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Messages'
+
+  /messages/{id}:
+    get:
+      summary: Get a Message associated with an authenticated User by ID
+      description: Get a Message associated with an authenticated User by ID
+      security:
+        - basicAuth: []
+      tags:
+        - Messages
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the Message to return
+      responses:
+        '200':    # status code
+          description: 200 status for sucessful get a message request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Messages'
+    patch:
+      summary: Update a Message associated with an authenticated User by ID
+      description: Update a Message associated with an authenticated User by ID
+      security:
+        - basicAuth: []
+      tags:
+        - Messages
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the message to update
+      requestBody:
+        description: Update messages fields
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Messages'
+      responses:
+        '200':    # status code
+          description: 200 status for sucessful Update messages request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Messages'
+    delete:
+      summary: Delete a Message associated with an authenticated User by ID
+      description: Delete a Message associated with an authenticated User by ID
+      security:
+        - basicAuth: []
+      tags:
+        - Messages
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the Message to delete
+      responses:
+        '200':    # status code
+          description: 200 status for sucessful Delete messages request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Messages'
+
   /users/{id}:
     delete:
       summary:  Delete a user by id.

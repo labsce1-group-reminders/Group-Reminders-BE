@@ -74,9 +74,10 @@ const messageSchema = {
     .integer()
     .min(1)
     .required(),
+  status: Joi.number().integer().min(0),
   for_manager: Joi.boolean(),
-  for_mentor: Joi.boolean(),
-  for_team_member: Joi.boolean(),
+  for_class: Joi.boolean(),
+  for_class_member: Joi.boolean(),
   days_from_start: Joi.number()
     .integer()
     .min(1)

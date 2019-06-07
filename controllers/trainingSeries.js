@@ -168,6 +168,12 @@ router.get("/:id/messages", async (req, res) => {
   //find the messages by ID
   const messages = await Messages.find({ "ts.id": id });
 
+    //if no message series is found with that ID return a 404 and message.
+    if (!messages.length) {
+        return res.status(404).json({
+            message: "Sorry! That message series doesn't exist."
+        });
+    }
   //return the training series and its messages to the client
   return res.status(200).json({ trainingSeries, messages });
 });

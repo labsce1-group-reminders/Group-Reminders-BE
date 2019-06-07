@@ -37,7 +37,7 @@ const options = {
 server.use("/api/auth", authRouter);
 server.use("/api/users", authentication, usersRouter);
 server.use("/api/organizations", authentication, organizationsRouter);
-server.use("/api/class_member", authentication, classMember);
+server.use("/api/class-member", authentication, classMember);
 server.use("/api/classes", authentication, classes);
 server.use("/api/training-series", authentication, trainingsRouter);
 server.use("/api/messages", authentication, messageRouter);

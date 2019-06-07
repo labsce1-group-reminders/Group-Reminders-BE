@@ -43,13 +43,11 @@ router
      */
 
     // Destructure the authenticated User email from res.locals
-    const { email } = res.locals.user;
+        // const { email } = res.locals.user;
 
     // Retrieve the Training Series referenced with the authenticated user by the training_series_id
     const trainingSeriesExists = await TrainingSeries.find({
-      "ts.id": req.body.training_series_id,
-      "u.email": email
-    }).first();
+      "ts.id": req.body.training_series_id}).first();
 
     // If trainingSeriesExists is falsey, we can assume the Training Series does not exist
     if (!trainingSeriesExists) {
