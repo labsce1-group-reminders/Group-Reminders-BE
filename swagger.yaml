@@ -1,0 +1,500 @@
+openapi: 3.0.0
+info:
+  title: Group Reminder
+  description: Group Reminder app for non profit organization [CommonMark](http://commonmark.org/help/) or HTML.
+  version: 0.3.0
+servers:
+  - url: http://localhost:5000/api
+    description: Main (dev) server
+  - url: https://group-reminders.herokuapp.com/
+    description:  Main (production) server
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - email
+        - name
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        country:
+          type: string
+        is_admin:
+          type: boolean
+        is_manager:
+            type: boolean
+    Organizations:
+      type: object
+      required:
+        - name
+        - user_id
+      properties:
+        name:
+          type: string
+        user_id:
+          type: integer
+    Services:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+    Training Series:
+      type: object
+      required:
+        - name
+        - country
+        - user_id
+      properties:
+        name:
+          type: string
+        country:
+          type: string
+        user_id:
+          type: integer
+    Classes:
+      type: object
+      required:
+        - title
+        - user_id
+      properties:
+        title:
+          type: string
+        user_id:
+          type: integer
+    Class Member:
+      type: object
+      required:
+        - first_name
+        - last_name
+        - class_id
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+        phone_number:
+          type: string
+        class_id:
+          type: integer
+    Messages:
+      type: object
+      required:
+        - subject
+        - body
+        - link
+        - training_series_id
+        - for_manager
+        - for_class
+        - for_class_member
+      properties:
+        subject:
+          type: string
+        body:
+          type: string
+        link:
+          type: string
+        status:
+          type: integer
+        days_from_start:
+          type: integer
+        training_series_id:
+          type: integer
+        for_manager:
+          type: boolean
+        for_class:
+          type: boolean
+        for_class_member:
+          type: boolean
+  securitySchemes:
+    basicAuth: # <---- arbitrary name
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    openId:   # <--- Arbitrary name for the security scheme. Used to refer to it from elsewhere.
+      type: openIdConnect
+      openIdConnectUrl: https://example.com/.well-known/openid-configuration
+
+
+
+paths:
+  /auth:
+    post:
+      summary: authenticate user.
+      description: Return authenticated user.
+      tags:
+        - auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+
+      responses:
+        '200':
+          description: A Json representation of authenticated user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /organizations:
+    get:
+      summary: Get all Organizations
+      description: Get a list of all Organizations
+      security:
+        - basicAuth: []
+      tags:
+        - organizations
+      responses:
+        '200':    # status code
+          description: A JSON array of organizations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organizations'
+
+    post:
+      summary:  Create a new Organization
+      description: Return a new Organization
+      security:
+        - basicAuth: []
+      tags:
+        - organizations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Organizations'
+      responses:
+        '200':    # status code
+          description: A JSON representation of created organization
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organizations'
+  /organizations/{id}:
+    get:
+      summary: Get Organization by id
+      description: Get a detailed info about an Organization
+      security:
+        - basicAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the Organization to get
+      tags:
+        - organizations
+      responses:
+        '200':    # status code
+          description: A JSON array of organizations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organizations'
+    patch:
+      summary:  Patch an Organization by id
+      description: Return an Organization instance that just got updated
+      security:
+        - basicAuth: []
+      tags:
+        - organizations
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of an Organization to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Organizations'
+      responses:
+        '200':    # status code
+          description: A JSON representation of updated organization
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organizations'
+    delete:
+      summary: Delete Organization by id
+      description: Delete an Organization by id
+      security:
+        - basicAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the Organization to delete
+      tags:
+        - organizations
+      responses:
+        '200':    # status code
+          description: 200 status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The Organization ID that got deleted.
+  /classes:
+    get:
+      summary: Get all Classes
+      description: Get a list of all Classes
+      security:
+        - basicAuth: []
+      tags:
+        - Classes
+      responses:
+        '200':    # status code
+          description: A JSON array of Classes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Classes'
+    post:
+      summary:  Create a new Class instance
+      description: Return a new created Class instance
+      security:
+        - basicAuth: []
+      tags:
+        - Classes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Classes'
+      responses:
+        '200':    # status code
+          description: A newly created  Class instance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Classes'
+  /classes/{id}:
+    get:
+      summary: Get a Class by id
+      description: Get a detailed info about a Class
+      security:
+        - basicAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the Class to get
+      tags:
+        - Classes
+      responses:
+        '200':    # status code
+          description: A JSON array of Class
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Classes'
+    patch:
+      summary:  Patch a Class by id
+      description: Return a Class instance that just got updated
+      security:
+        - basicAuth: []
+      tags:
+        - Classes
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of a Class to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Classes'
+      responses:
+        '200':    # status code
+          description: A JSON representation of updated Class
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Class'
+    delete:
+      summary: Delete Class by id
+      description: Delete a Class by id
+      security:
+        - basicAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the Class to delete
+      tags:
+        - Classes
+      responses:
+        '200':    # status code
+          description: 200 status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The Class ID that just got deleted.
+  /class_member:
+    get:
+      summary: Get all Class Members
+      description: Get a list of all Class Member
+      security:
+        - basicAuth: []
+      tags:
+        - Class Member
+      responses:
+        '200':    # status code
+          description: A JSON array of Class Member
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Class Member'
+    post:
+      summary:  Create a new Class Member
+      description: Return a new created Class Member
+      security:
+        - basicAuth: []
+      tags:
+        - Class Member
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Class Member'
+      responses:
+        '200':    # status code
+          description: A JSON representation of newly created Class Member
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Class Member'
+  /class_member/{id}:
+    get:
+      summary: Get a Class Member by id
+      description: Get a detailed info about a Class Member
+      security:
+        - basicAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the Class Member to get
+      tags:
+        - Class Member
+      responses:
+        '200':    # status code
+          description: A JSON representation of Class
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Class Member'
+    patch:
+      summary:  Patch a Class Member by id
+      description: Return a Class Member instance that just got updated
+      security:
+        - basicAuth: []
+      tags:
+        - Class Member
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of a Class Member to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Class Member'
+      responses:
+        '200':    # status code
+          description: A JSON representation of updated Class Member
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Class Member'
+    delete:
+      summary: Delete Class Member by id
+      description: Delete a Class Member by id
+      security:
+        - basicAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the Class Member to delete
+      tags:
+        - Class Member
+      responses:
+        '200':    # status code
+          description: 200 status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The Class Member ID that just got deleted.
+  /users/{id}:
+    delete:
+      summary:  Delete a user by id.
+      description: Return id of deleted a user.
+      security:
+        - basicAuth: []
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the user to delete
+      responses:
+        '200':    # status code
+          description: 200 status for sucessful deletation of the user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The User ID that got deleted.

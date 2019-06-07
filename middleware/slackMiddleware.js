@@ -1,6 +1,6 @@
 // Models
 const Tokens = require("../models/db/tokens");
-const TeamMembers = require("../models/db/teamMembers");
+const TeamMembers = require("../models/db/classMembers");
 
 /**
  * Middleware to retrieve Slack token for authenticated user,
