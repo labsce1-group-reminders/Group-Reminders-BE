@@ -1,6 +1,7 @@
 const db = require("../index");
 
 module.exports = {
+  get,
   add,
   find,
   update,
@@ -18,8 +19,19 @@ module.exports = {
 function add(message) {
   return db("messages")
     .insert(message, ["*"])
-    .then(m => find({ "m.id": m[0].id }).first());
 }
+
+/**
+ * Get all Messages from the database
+ *
+ * @function
+ * @returns {Promise} Promise that resolves to the query objects
+ */
+function get() {
+  return db("messages")
+      .select("*")
+}
+
 
 /**
  * Finds a particular message or set of messages based on the contents of a
@@ -35,9 +47,9 @@ function find(filters) {
       "m.subject",
       "m.body",
       "m.link",
+      "m.for_class",
       "m.for_manager",
-      "m.for_mentor",
-      "m.for_team_member",
+      "m.for_class_member",
       "ts.title AS series",
       "m.training_series_id",
       "m.days_from_start"

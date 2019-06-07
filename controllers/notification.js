@@ -4,7 +4,7 @@ const router = require("express").Router();
 // Models
 const Notifications = require("../models/db/notifications");
 const Messages = require("../models/db/messages");
-const TeamMembers = require("../models/db/teamMembers");
+const TeamMembers = require("../models/db/classMembers");
 const Responses = require("../models/db/responses");
 
 // Validation

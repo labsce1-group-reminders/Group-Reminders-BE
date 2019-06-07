@@ -18,34 +18,46 @@ const userSchema = {
     .max(3)
     .required()
 };
+const organizationsSchema = {
+  name: Joi.string()
+      .max(255)
+      .required(),
 
-const teamMemberSchema = {
+  user_id: Joi.number()
+      .integer()
+      .required()
+};
+
+const classMemberSchema = {
   first_name: Joi.string().required(),
   last_name: Joi.string().required(),
-  job_description: Joi.string(),
   email: Joi.string()
-    .email({ minDomainSegments: 2 })
-    .allow(""),
+      .email({ minDomainSegments: 2 })
+      .allow(""),
   phone_number: Joi.string(),
   slack_uuid: Joi.string()
-    .token()
-    .allow(""),
+      .token()
+      .allow(""),
   user_id: Joi.number()
-    .integer()
-    .min(1)
-    .required(),
-  manager_id: Joi.number()
-    .integer()
-    .min(1)
-    .allow(null),
-  mentor_id: Joi.number()
-    .integer()
-    .min(1)
-    .allow(null)
+      .integer()
+      .min(1)
+      .allow(null),
+  class_id: Joi.number()
+      .integer()
+      .min(1)
+      .allow(null),
+};
+const classSchema = {
+  title: Joi.string().required(),
+  user_id: Joi.number()
+      .integer()
+      .min(1)
+      .allow(null),
 };
 
 const trainingSeriesSchema = {
   title: Joi.string().required(),
+  country: Joi.string().required(),
   user_id: Joi.number()
     .integer()
     .min(1)
@@ -62,9 +74,10 @@ const messageSchema = {
     .integer()
     .min(1)
     .required(),
+  status: Joi.number().integer().min(0),
   for_manager: Joi.boolean(),
-  for_mentor: Joi.boolean(),
-  for_team_member: Joi.boolean(),
+  for_class: Joi.boolean(),
+  for_class_member: Joi.boolean(),
   days_from_start: Joi.number()
     .integer()
     .min(1)
@@ -125,10 +138,12 @@ const responseSchema = {
 
 module.exports = {
   userSchema,
-  teamMemberSchema,
+  classMemberSchema,
+  classSchema,
   trainingSeriesSchema,
   messageSchema,
   tokenSchema,
   notificationSchema,
-  responseSchema
+  responseSchema,
+  organizationsSchema
 };

@@ -1,0 +1,736 @@
+openapi: 3.0.0
+info:
+  title: Group Reminder
+  description: Group Reminder app for non profit organization [MentorsInternational](https://mentorsinternational.org/) or HTML.
+    Since most of our url is protected, user will need a JWT token in order to get access. You can get that token from
+    localstorage in the Front-End application, and just copy paste that in to the input provided after clicking the authorize button bellow
+  version: 0.3.0
+servers:
+  - url: http://localhost:5000/api
+    description: Main (dev) server
+  - url: https://group-reminders.herokuapp.com/
+    description:  Main (production) server
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - email
+        - name
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        country:
+          type: string
+        is_admin:
+          type: boolean
+        is_manager:
+            type: boolean
+    Organizations:
+      type: object
+      required:
+        - name
+        - user_id
+      properties:
+        name:
+          type: string
+        user_id:
+          type: integer
+    Services:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+    Training Series:
+      type: object
+      required:
+        - title
+        - country
+        - user_id
+      properties:
+        title:
+          type: string
+        country:
+          type: string
+        user_id:
+          type: integer
+    Classes:
+      type: object
+      required:
+        - title
+        - user_id
+      properties:
+        title:
+          type: string
+        user_id:
+          type: integer
+    Class Member:
+      type: object
+      required:
+        - first_name
+        - last_name
+        - class_id
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+        phone_number:
+          type: string
+        class_id:
+          type: integer
+    Messages:
+      type: object
+      required:
+        - subject
+        - body
+        - link
+        - training_series_id
+      properties:
+        subject:
+          type: string
+        body:
+          type: string
+        link:
+          type: string
+        status:
+          type: integer
+        days_from_start:
+          type: integer
+        training_series_id:
+          type: integer
+        for_manager:
+          type: boolean
+        for_class:
+          type: boolean
+        for_class_member:
+          type: boolean
+  securitySchemes:
+    basicAuth: # <---- arbitrary name
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+paths:
+  /auth:
+    post:
+      summary: authenticate user.
+      description: Return authenticated user.
+      tags:
+        - auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+
+      responses:
+        '200':
+          description: A Json representation of authenticated user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /organizations:
+    get:
+      summary: Get all Organizations
+      description: Get a list of all Organizations
+      security:
+        - basicAuth: []
+      tags:
+        - Organizations
+      responses:
+        '200':    # status code
+          description: A JSON array of organizations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organizations'
+    post:
+      summary:  Create a new Organization
+      description: Return a new Organization
+      security:
+        - basicAuth: []
+      tags:
+        - Organizations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Organizations'
+      responses:
+        '200':    # status code
+          description: A JSON representation of created organization
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organizations'
+  /organizations/{id}:
+    get:
+      summary: Get Organization by id
+      description: Get a detailed info about an Organization
+      security:
+        - basicAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the Organization to get
+      tags:
+        - Organizations
+      responses:
+        '200':    # status code
+          description: A JSON array of organizations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organizations'
+    patch:
+      summary:  Patch an Organization by id
+      description: Return an Organization instance that just got updated
+      security:
+        - basicAuth: []
+      tags:
+        - Organizations
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of an Organization to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Organizations'
+      responses:
+        '200':    # status code
+          description: A JSON representation of updated organization
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organizations'
+    delete:
+      summary: Delete Organization by id
+      description: Delete an Organization by id
+      security:
+        - basicAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the Organization to delete
+      tags:
+        - Organizations
+      responses:
+        '200':    # status code
+          description: 200 status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The Organization ID that got deleted.
+  /classes:
+    get:
+      summary: Get all Classes
+      description: Get a list of all Classes
+      security:
+        - basicAuth: []
+      tags:
+        - Classes
+      responses:
+        '200':    # status code
+          description: A JSON array of Classes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Classes'
+    post:
+      summary:  Create a new Class instance
+      description: Return a new created Class instance
+      security:
+        - basicAuth: []
+      tags:
+        - Classes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Classes'
+      responses:
+        '200':    # status code
+          description: A newly created  Class instance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Classes'
+  /classes/{id}:
+    get:
+      summary: Get a Class by id
+      description: Get a detailed info about a Class
+      security:
+        - basicAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the Class to get
+      tags:
+        - Classes
+      responses:
+        '200':    # status code
+          description: A JSON array of Class
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Classes'
+    patch:
+      summary:  Patch a Class by id
+      description: Return a Class instance that just got updated
+      security:
+        - basicAuth: []
+      tags:
+        - Classes
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of a Class to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Classes'
+      responses:
+        '200':    # status code
+          description: A JSON representation of updated Class
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Class'
+    delete:
+      summary: Delete Class by id
+      description: Delete a Class by id
+      security:
+        - basicAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the Class to delete
+      tags:
+        - Classes
+      responses:
+        '200':    # status code
+          description: 200 status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The Class ID that just got deleted.
+  /class-member:
+    get:
+      summary: Get all Class Members
+      description: Get a list of all Class Member
+      security:
+        - basicAuth: []
+      tags:
+        - Class Member
+      responses:
+        '200':    # status code
+          description: A JSON array of Class Member
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Class Member'
+    post:
+      summary:  Create a new Class Member
+      description: Return a new created Class Member
+      security:
+        - basicAuth: []
+      tags:
+        - Class Member
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Class Member'
+      responses:
+        '200':    # status code
+          description: A JSON representation of newly created Class Member
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Class Member'
+  /class-member/{id}:
+    get:
+      summary: Get a Class Member by id
+      description: Get a detailed info about a Class Member
+      security:
+        - basicAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the Class Member to get
+      tags:
+        - Class Member
+      responses:
+        '200':    # status code
+          description: A JSON representation of Class
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Class Member'
+    patch:
+      summary:  Patch a Class Member by id
+      description: Return a Class Member instance that just got updated
+      security:
+        - basicAuth: []
+      tags:
+        - Class Member
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of a Class Member to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Class Member'
+      responses:
+        '200':    # status code
+          description: A JSON representation of updated Class Member
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Class Member'
+    delete:
+      summary: Delete Class Member by id
+      description: Delete a Class Member by id
+      security:
+        - basicAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the Class Member to delete
+      tags:
+        - Class Member
+      responses:
+        '200':    # status code
+          description: 200 status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The Class Member ID that just got deleted.
+  /training-series:
+    get:
+      summary:  Get a list of all Training Serieses
+      description:  Get request for a list of all Training Serieses
+      security:
+        - basicAuth: []
+      tags:
+        - Training Series
+      parameters:
+        - in: query
+          name: search
+          schema:
+            type: string
+          description: search for training series
+      responses:
+        '200':    # status code
+          description: Return a list of all Training Series
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Training Series'
+    post:
+      summary:  Create a new Training Series
+      description: Using post method, a new Training Series can be created
+      security:
+        - basicAuth: []
+      tags:
+        - Training Series
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Training Series'
+      responses:
+        '200':    # status code
+          description: Return a newly created Training Series
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Training Series'
+  /training-series/{id}:
+    get:
+      summary:  Get a Training Series by id
+      description: Get request for Training Series model instance
+      security:
+        - basicAuth: []
+      tags:
+        - Training Series
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of a Training Series
+      responses:
+        '200':    # status code
+          description: A JSON representation of fetched Training Series instance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Training Series'
+    patch:
+      summary:  Patch a Training Series by id
+      description: Update request for instance on Training Series model
+      security:
+        - basicAuth: []
+      tags:
+        - Training Series
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of a Training Series to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Training Series'
+      responses:
+        '200':    # status code
+          description: A JSON representation of updated Training Series
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Training Series'
+    delete:
+      summary:  Delete a Training Series by id
+      description: Delete request for Training Series model instance
+      security:
+        - basicAuth: []
+      tags:
+        - Training Series
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of a Training Series
+      responses:
+        '200':    # status code
+          description: A JSON representation of Delete Training Series instance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Training Series'
+  /training-series/{id}/messages:
+    get:
+      summary:  Get all the messages for a specific training series
+      description: Get all the messages for a specific training series
+      security:
+        - basicAuth: []
+      tags:
+        - Training Series
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of a Training Series
+      responses:
+        '200':    # status code
+          description: A JSON representation of array of Messages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Messages'
+  /messages:
+    get:
+      summary: Get all Messages associated with an authenticated User
+      description: Get all Messages associated with an authenticated User
+      security:
+        - basicAuth: []
+      tags:
+        - Messages
+      responses:
+        '200':    # status code
+          description: 200 status for sucessful get request of all messages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Messages'
+    post:
+      summary: Create a new Message associated with an authenticated User
+      description: Create a new Message associated with an authenticated User
+      security:
+        - basicAuth: []
+      tags:
+        - Messages
+      requestBody:
+        description: Creating messages fields
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Messages'
+      responses:
+        '200':    # status code
+          description: 200 status for sucessful create messages request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Messages'
+
+  /messages/{id}:
+    get:
+      summary: Get a Message associated with an authenticated User by ID
+      description: Get a Message associated with an authenticated User by ID
+      security:
+        - basicAuth: []
+      tags:
+        - Messages
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the Message to return
+      responses:
+        '200':    # status code
+          description: 200 status for sucessful get a message request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Messages'
+    patch:
+      summary: Update a Message associated with an authenticated User by ID
+      description: Update a Message associated with an authenticated User by ID
+      security:
+        - basicAuth: []
+      tags:
+        - Messages
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the message to update
+      requestBody:
+        description: Update messages fields
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Messages'
+      responses:
+        '200':    # status code
+          description: 200 status for sucessful Update messages request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Messages'
+    delete:
+      summary: Delete a Message associated with an authenticated User by ID
+      description: Delete a Message associated with an authenticated User by ID
+      security:
+        - basicAuth: []
+      tags:
+        - Messages
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the Message to delete
+      responses:
+        '200':    # status code
+          description: 200 status for sucessful Delete messages request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Messages'
+
+  /users/{id}:
+    delete:
+      summary:  Delete a user by id.
+      description: Return id of deleted a user.
+      security:
+        - basicAuth: []
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the user to delete
+      responses:
+        '200':    # status code
+          description: 200 status for sucessful deletation of the user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The User ID that got deleted.
+
