@@ -1,6 +1,7 @@
 const db = require("../index");
 
 module.exports = {
+  get,
   add,
   find,
   update,
@@ -19,9 +20,20 @@ module.exports = {
  */
 function find(filters) {
   return db("training_series AS ts")
-    .select("ts.id", "ts.title", "u.email AS user")
-    .join("users AS u", { "ts.user_id": "u.id" })
+    .select("*")
     .where(filters);
+}
+
+
+/**
+ * Get all training series
+ *
+ * @function
+ * @returns {Promise} - A Promise that resolves to an array of training series objects
+ */
+function get() {
+  return db("training_series")
+      .select("*")
 }
 
 /**
@@ -37,7 +49,6 @@ function find(filters) {
 function add(series) {
   return db("training_series")
     .insert(series, ["*"])
-    .then(ts => find({ "ts.id": ts[0].id }).first());
 }
 
 /**
