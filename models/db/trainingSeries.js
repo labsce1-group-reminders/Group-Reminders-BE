@@ -4,6 +4,7 @@ module.exports = {
   get,
   add,
   find,
+  searchByTitle,
   update,
   remove
 };
@@ -22,6 +23,22 @@ function find(filters) {
   return db("training_series AS ts")
     .select("*")
     .where(filters);
+}
+
+/**
+ * Search  training series instance by title
+ *
+ * @function
+ *
+ * @param {Object} filters - A filters object to pass to the SQL WHERE clause
+ * @see https://knexjs.org/#Builder-where
+ *
+ * @returns {Promise} - A Promise that resolves to an array of training series objects
+ */
+function searchByTitle(filters) {
+    return db("training_series")
+        .select("*")
+        .where("title", "like", `%${filters}%`);
 }
 
 

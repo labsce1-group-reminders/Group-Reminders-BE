@@ -24,8 +24,7 @@ router
     let {search} = req.query;
     let trainingSeries;
     if(search){
-      trainingSeries = await TrainingSeries.find(search);
-
+      trainingSeries = await TrainingSeries.searchByTitle(search);
     }else{
       trainingSeries = await TrainingSeries.get();
 

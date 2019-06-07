@@ -479,6 +479,12 @@ paths:
         - basicAuth: []
       tags:
         - Training Series
+      parameters:
+        - in: query
+          name: search
+          schema:
+            type: string
+          description: search for training series
       responses:
         '200':    # status code
           description: Return a list of all Training Series
