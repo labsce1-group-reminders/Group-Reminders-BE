@@ -46,7 +46,7 @@ components:
     Training Series:
       type: object
       required:
-        - name
+        - title
         - country
         - user_id
       properties:
@@ -151,7 +151,7 @@ paths:
       security:
         - basicAuth: []
       tags:
-        - organizations
+        - Organizations
       responses:
         '200':    # status code
           description: A JSON array of organizations
@@ -159,14 +159,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Organizations'
-
     post:
       summary:  Create a new Organization
       description: Return a new Organization
       security:
         - basicAuth: []
       tags:
-        - organizations
+        - Organizations
       requestBody:
         required: true
         content:
@@ -194,7 +193,7 @@ paths:
           required: true
           description: Numeric ID of the Organization to get
       tags:
-        - organizations
+        - Organizations
       responses:
         '200':    # status code
           description: A JSON array of organizations
@@ -208,7 +207,7 @@ paths:
       security:
         - basicAuth: []
       tags:
-        - organizations
+        - Organizations
       parameters:
         - in: path
           name: id
@@ -242,7 +241,7 @@ paths:
           required: true
           description: Numeric ID of the Organization to delete
       tags:
-        - organizations
+        - Organizations
       responses:
         '200':    # status code
           description: 200 status
@@ -363,7 +362,7 @@ paths:
                   id:
                     type: integer
                     description: The Class ID that just got deleted.
-  /class_member:
+  /class-member:
     get:
       summary: Get all Class Members
       description: Get a list of all Class Member
@@ -398,7 +397,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Class Member'
-  /class_member/{id}:
+  /class-member/{id}:
     get:
       summary: Get a Class Member by id
       description: Get a detailed info about a Class Member
@@ -472,6 +471,111 @@ paths:
                   id:
                     type: integer
                     description: The Class Member ID that just got deleted.
+  /training-series:
+    get:
+      summary:  Get a list of all Training Serieses
+      description:  Get request for a list of all Training Serieses
+      security:
+        - basicAuth: []
+      tags:
+        - Training Series
+      responses:
+        '200':    # status code
+          description: Return a list of all Training Series
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Training Series'
+    post:
+      summary:  Create a new Training Series
+      description: Using post method, a new Training Series can be created
+      security:
+        - basicAuth: []
+      tags:
+        - Training Series
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Training Series'
+      responses:
+        '200':    # status code
+          description: Return a newly created Training Series
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Training Series'
+  /training-series/{id}:
+    get:
+      summary:  Get a Training Series by id
+      description: Get request for Training Series model instance
+      security:
+        - basicAuth: []
+      tags:
+        - Training Series
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of a Training Series
+      responses:
+        '200':    # status code
+          description: A JSON representation of fetched Training Series instance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Training Series'
+    patch:
+      summary:  Patch a Training Series by id
+      description: Update request for instance on Training Series model
+      security:
+        - basicAuth: []
+      tags:
+        - Training Series
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of a Training Series to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Training Series'
+      responses:
+        '200':    # status code
+          description: A JSON representation of updated Training Series
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Training Series'
+    delete:
+      summary:  Delete a Training Series by id
+      description: Delete request for Training Series model instance
+      security:
+        - basicAuth: []
+      tags:
+        - Training Series
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of a Training Series
+      responses:
+        '200':    # status code
+          description: A JSON representation of Delete Training Series instance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Training Series'
   /users/{id}:
     delete:
       summary:  Delete a user by id.
@@ -479,7 +583,7 @@ paths:
       security:
         - basicAuth: []
       tags:
-        - users
+        - Users
       parameters:
         - in: path
           name: id
@@ -498,3 +602,4 @@ paths:
                   id:
                     type: integer
                     description: The User ID that got deleted.
+
