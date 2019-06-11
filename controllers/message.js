@@ -23,10 +23,10 @@ router
      */
 
     // Destructure the authenticated User email from res.locals
-    const { email } = res.locals.user;
+    const { id } = res.locals.user;
 
     // Get all Messages from the database that are associated with the authenticated user
-    const messages = await Messages.find({ "u.email": email });
+    const messages = await Messages.find({ "u.id": id });
 
     // Return the found Messages to the client
     res.status(200).json({ messages });
@@ -79,12 +79,12 @@ router
     const { id } = req.params;
 
     // Destructure the authenticated User email off of res.locals
-    const { email } = res.locals.user;
+    let user_id = res.locals.user.id;
 
     // Get the Message associated with the user by ID
     const message = await Messages.find({
       "m.id": id,
-      "u.email": email
+      "u.id": user_id
     }).first();
 
     message
@@ -104,17 +104,18 @@ router
      * @param {Object} req.body - The request body, which represents the changes to be made on a specified Message
      * @returns {Object} - The Express response object
      */
+    let user_id = res.locals.user.id;
+
 
     // Destructure the ID off the request parameters
     const { id } = req.params;
 
     // Destructure the authenticated User email from res.locals
-    const { email } = res.locals.user;
 
     // Attempt to find the Message in the database that relates to the authenticated user
     const messageExists = await Messages.find({
       "m.id": id,
-      "u.email": email
+      "u.id": user_id
     });
 
     // If messageExists is falsey, either the Message does not exist in the database or the authenticated user does not have access to it
@@ -142,12 +143,12 @@ router
     const { id } = req.params;
 
     // Destructure the authenticated User email off of res.locals
-    const { email } = res.locals.user;
+    let user_id = res.locals.user.id;
 
     // Get the Message associated with the user by ID
     const message = await Messages.find({
       "m.id": id,
-      "u.email": email
+      "u.id": user_id
     }).first();
 
     // If message is falsey, either the Message doesn't exist in the database or the user doesn't have access
