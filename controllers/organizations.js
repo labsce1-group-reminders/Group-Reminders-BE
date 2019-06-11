@@ -22,7 +22,6 @@ router
          * @returns {Object} - The Express response object
          */
 
-
         // Get all Team Members from the database that are associated with the authenticated User
         const organizations = await Organizations.get();
 
@@ -36,16 +35,20 @@ router
          *
          * @function
          * @param {Object} req - The Express request object
-         * @param {Object} req.body - The request body, which represents a new Team Member
+         * @param {Object} req.body - The request body, which represents a new Organization
          * @param {Object} res - The Express response object
          * @returns {Object} - The Express response object
          */
-
+        const { id } = res.locals.user;
             // Add the new Organization to the database
-        const newOrganization = await Organizations.add(req.body);
+        if(user.is_admin){
+            const newOrganization = await Organizations.add({...req.body, user_id: id});
 
-        // Return the newly created Organization to the client
-        return res.status(201).json({ newOrganization });
+            // Return the newly created Organization to the client
+            return res.status(201).json({ newOrganization });
+        }else{
+            return res.status(401).json({error: "User does not have a permission to create organization"});
+        }
     });
 
 router
@@ -134,71 +137,69 @@ router
 
 router.delete("/:id/unassign/:ts_id", async (req, res) => {
     /**
-     * "Unassign" a specific Team Member from a specific Training Series.
-     * Ultimately, this deletes all pending notifications for that Team Member
-     * that are associated with a particular Training Series.
+     * TODO "Unassign" a specific Admin from a specific Organization.
      *
      * @function
      * @param {Object} req - The Express request object
      * @param {Object} res - The Express response object
      * @returns {Object} - The Express response object
      */
-
-        // Destructure the Team Member ID and Training Series ID off of the request object
-    const { id, ts_id } = req.params;
-
-    // Find all Messages associated with the specified Training Series
-    const messages = await Messages.find({
-        "ts.id": ts_id
-    });
-
-    // If messages.length is falsey, we can assume that that Team Member hasn't
-    // been assigned to that training series.
-    if (!messages.length) {
-        return res.status(404).json({
-            message:
-                "This Team Member doesn't have any messages for that Training Series."
-        });
-    }
-
-    // Compile a list of all pending Notifications associated with a Training
-    // Series for that Team Member, based on the messages found above. This will
-    // be an array of Promises
-    const pNotifs = messages.map(
-        async m =>
-            await Notifications.find({
-                "m.id": m.id,
-                "tm.id": id
-            })
-    );
-
-    // Resolve all Promises in that array
-    const rNotifs = await Promise.all(pNotifs);
-
-    // Flatten all nested arrays inside of rNotifs
-    const notifsToDelete = arrayFlat(rNotifs);
-
-    // Delete each notification and send back total number of deleted items,
-    // along with array of deleted ids to send to the client
-    const totalDeleted = notifsToDelete.map(
-        async n => await Notifications.remove({ "n.id": n.id })
-    );
-
-    // If totalDeleted.length is falsey, we can assume that there were no pending
-    // Notifications for that Team Member associated with that Training Series
-    if (!totalDeleted.length) {
-        return res.status(404).json({
-            message:
-                "This Team Member doesn't have any Notifications for that Training Series."
-        });
-    }
-
-    // Respond to the client with the number of resources deleted and the ID's of
-    // the deleted notifications
-    return res.status(200).json({
-        message: `${totalDeleted.length} resource(s) deleted.`,
-        ids: notifsToDelete.map(n => n.id)
-    });
+    //
+    //     // Destructure the Team Member ID and Training Series ID off of the request object
+    // const { id, ts_id } = req.params;
+    //
+    // // Find all Messages associated with the specified Training Series
+    // const messages = await Messages.find({
+    //     "ts.id": ts_id
+    // });
+    //
+    // // If messages.length is falsey, we can assume that that Team Member hasn't
+    // // been assigned to that training series.
+    // if (!messages.length) {
+    //     return res.status(404).json({
+    //         message:
+    //             "This Team Member doesn't have any messages for that Training Series."
+    //     });
+    // }
+    //
+    // // Compile a list of all pending Notifications associated with a Training
+    // // Series for that Team Member, based on the messages found above. This will
+    // // be an array of Promises
+    // const pNotifs = messages.map(
+    //     async m =>
+    //         await Notifications.find({
+    //             "m.id": m.id,
+    //             "tm.id": id
+    //         })
+    // );
+    //
+    // // Resolve all Promises in that array
+    // const rNotifs = await Promise.all(pNotifs);
+    //
+    // // Flatten all nested arrays inside of rNotifs
+    // const notifsToDelete = arrayFlat(rNotifs);
+    //
+    // // Delete each notification and send back total number of deleted items,
+    // // along with array of deleted ids to send to the client
+    // const totalDeleted = notifsToDelete.map(
+    //     async n => await Notifications.remove({ "n.id": n.id })
+    // );
+    //
+    // // If totalDeleted.length is falsey, we can assume that there were no pending
+    // // Notifications for that Team Member associated with that Training Series
+    // if (!totalDeleted.length) {
+    //     return res.status(404).json({
+    //         message:
+    //             "This Team Member doesn't have any Notifications for that Training Series."
+    //     });
+    // }
+    //
+    // // Respond to the client with the number of resources deleted and the ID's of
+    // // the deleted notifications
+    // return res.status(200).json({
+    //     message: `${totalDeleted.length} resource(s) deleted.`,
+    //     ids: notifsToDelete.map(n => n.id)
+    // });
 });
 
 module.exports = router;
