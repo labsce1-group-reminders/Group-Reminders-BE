@@ -45,11 +45,12 @@ router
      * @returns {Object} - The Express response object
      */
 
-    //deconstructure the title and user id from the req body.
-    const { title, country, user_id } = req.body;
+    //deconstruct the title and user id from the req body.
+    const { title, country } = req.body;
+      const { id } = res.locals.user;
 
     //add the new training series to the database
-    const newTrainingSeries = await TrainingSeries.add({ title, country, user_id });
+    const newTrainingSeries = await TrainingSeries.add({ title, country, user_id: id });
 
     //return the newly created training series to the client.
     return res.status(201).json({ newTrainingSeries });

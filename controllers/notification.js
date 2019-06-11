@@ -25,10 +25,10 @@ router
      */
 
     // Destructure the authenticated User email from res.locals
-    const { email } = res.locals.user;
+    const { id } = res.locals.user;
 
     // Get all Notifications from the database that are associated with the authenticated user
-    const notifications = await Notifications.find({ "u.email": email });
+    const notifications = await Notifications.find({ "u.id": id });
 
     // Return the found Notifications to the client
     res.status(200).json({ notifications });
@@ -45,7 +45,7 @@ router
      */
 
     // Destructure the authenticated User email from res.locals
-    const { email } = res.locals.user;
+    const { id } = res.locals.user;
 
     // Destructure the Message ID and Team Member ID off the request body
     const { message_id, team_member_id, recipient_id } = req.body;
@@ -53,7 +53,7 @@ router
     // Retrieve the Message referenced with the authenticated user by the message_id
     const messageExists = await Messages.find({
       "m.id": message_id,
-      "u.email": email
+      "u.id": id
     });
 
     // If messageExists is falsey, we can assume the Message does not exist
@@ -64,13 +64,13 @@ router
     // Retrieve the Team Member referenced with the referenced user by the team_member_id
     const teamMemberExists = await TeamMembers.find({
       "tm.id": team_member_id,
-      "u.email": email
+      "u.id": id
     });
 
     // Retrieve the Team Member referenced with the authenticated user by the recipient_id
     const recipientExists = await TeamMembers.find({
       "tm.id": recipient_id,
-      "u.email": email
+      "u.id": id
     });
 
     // If teamMemberExists or recipientExists is falsey, we can assume one or both do not exist
@@ -101,12 +101,11 @@ router.route("/:id").get(async (req, res) => {
   const { id } = req.params;
 
   // Destructure the authenticated User email off of res.locals
-  const { email } = res.locals.user;
-
+  let user_id = req.params.user.id;
   // Attempt to find the Notification in the database that relates to the authenticated user
   const notification = await Notifications.find({
     "n.id": id,
-    "u.email": email
+    "u.id": user_id
   }).first();
 
   notification
@@ -130,12 +129,12 @@ router.route("/:id/responses").get(async (req, res) => {
   const { id } = req.params;
 
   // Destructure the authenticated User email off of res.locals
-  const { email } = res.locals.user;
+  let user_id = req.params.user.id;
 
   // Attempt to find the Notification in the database that relates to the authenticated user
   const notification = await Notifications.find({
     "n.id": id,
-    "u.email": email
+    "u.id": user_id
   }).first();
 
   if (notification) {

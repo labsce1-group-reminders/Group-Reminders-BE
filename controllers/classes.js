@@ -44,10 +44,11 @@ router
          */
 
             // Add the new Class to the database
-        const newClass = await Class.add(req.body);
+        const { id } = res.locals.user;
+        const newClass = await Class.add({ ...req.body, user_id: id });
 
         // Return the newly created Class to the client
-        return res.status(201).json({ newClass });
+        return res.status(201).json({newClass});
     });
 
 router

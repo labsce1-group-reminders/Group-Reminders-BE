@@ -26,9 +26,10 @@ const slackRouter = require("./controllers/slack");
 const notificationsRouter = require("./controllers/notification");
 const responsesRouter = require("./controllers/responses");
 const swaggerUi = require('swagger-ui-express');
-// const swaggerDocument = require('./swagger.yaml');
 const YAML = require('yamljs');
+
 const swaggerDocument = YAML.load('./swagger.yaml');
+
 const options = {
   explorer: true
 };
@@ -46,9 +47,7 @@ server.use("/api/slack", authentication, slackRouter);
 server.use("/api/notifications", authentication, notificationsRouter);
 server.use("/api/responses", responsesRouter);
 server.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, options));
-server.get('/oauth2-redirect.html', function(req, res) {
-  res.sendFile(__dirname + "/znode_modules/swagger-ui-dist/oauth2-redirect.html");
-});
+
 //Default Endpoints
 server.get("/", (req, res) => {
   res.send("It works!");
