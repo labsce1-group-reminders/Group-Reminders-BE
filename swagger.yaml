@@ -18,6 +18,8 @@ components:
         - email
         - name
       properties:
+        id:
+          type: integer
         name:
           type: string
         email:
@@ -32,7 +34,6 @@ components:
       type: object
       required:
         - name
-        - user_id
       properties:
         name:
           type: string
@@ -50,7 +51,6 @@ components:
       required:
         - title
         - country
-        - user_id
       properties:
         title:
           type: string
@@ -62,7 +62,6 @@ components:
       type: object
       required:
         - title
-        - user_id
       properties:
         title:
           type: string
