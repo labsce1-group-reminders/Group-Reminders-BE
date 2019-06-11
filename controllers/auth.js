@@ -33,7 +33,7 @@ router.post("/", async (req, res) => {
     if (user) {
       try {
         // If a user was found, try to find the Training Series associated with that user
-        const trainingSeries = await TrainingSeries.find({ "u.id": user.id });
+        const trainingSeries = await TrainingSeries.find({ "ts.user_id": user.id });
 
         // Login is successful, return the User object, the found Training Series, and a Login Message to the client
         return res.status(200).json({
