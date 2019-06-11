@@ -12,20 +12,11 @@ const userSchema = {
     .integer()
     .min(0)
     .required(),
-  account_type_id: Joi.number()
-    .integer()
-    .min(1)
-    .max(3)
-    .required()
 };
 const organizationsSchema = {
   name: Joi.string()
       .max(255)
       .required(),
-
-  user_id: Joi.number()
-      .integer()
-      .required()
 };
 
 const classMemberSchema = {
@@ -38,10 +29,6 @@ const classMemberSchema = {
   slack_uuid: Joi.string()
       .token()
       .allow(""),
-  user_id: Joi.number()
-      .integer()
-      .min(1)
-      .allow(null),
   class_id: Joi.number()
       .integer()
       .min(1)
@@ -49,19 +36,11 @@ const classMemberSchema = {
 };
 const classSchema = {
   title: Joi.string().required(),
-  user_id: Joi.number()
-      .integer()
-      .min(1)
-      .allow(null),
 };
 
 const trainingSeriesSchema = {
   title: Joi.string().required(),
   country: Joi.string().required(),
-  user_id: Joi.number()
-    .integer()
-    .min(1)
-    .required()
 };
 
 const messageSchema = {
