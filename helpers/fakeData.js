@@ -85,7 +85,6 @@ function createFakeClassMembers() {
     email: faker.internet.email(),
     phone_number: faker.phone.phoneNumber(),
     slack_uuid: uuidv4(),
-    user_id: faker.random.number({ min: 1, max: userSeeds }),
     class_id: faker.random.number({ min: 1, max: classSeeds }),
   });
   for (let i = 0; i < memberSeeds; i++) {
