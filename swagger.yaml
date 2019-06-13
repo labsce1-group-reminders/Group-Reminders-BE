@@ -8,7 +8,7 @@ info:
 servers:
   - url: http://localhost:5000/api
     description: Main (dev) server
-  - url: https://group-reminders.herokuapp.com/
+  - url: https://group-reminders.herokuapp.com/api
     description:  Main (production) server
 components:
   schemas:
