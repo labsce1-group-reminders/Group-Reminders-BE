@@ -27,8 +27,12 @@ const classMemberSchema = {
       .allow(""),
   phone_number: Joi.string(),
   slack_uuid: Joi.string()
-      .token()
+      // .token()
       .allow(""),
+  user_id: Joi.number()
+        .integer()
+        .min(1)
+        .allow(null),
   class_id: Joi.number()
       .integer()
       .min(1)
